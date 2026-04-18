@@ -1,9 +1,4 @@
-use std::{
-    cmp::Ordering,
-    ops::RangeInclusive,
-    sync::{LazyLock, Once},
-    time::Duration,
-};
+use std::{cmp::Ordering, ops::RangeInclusive, sync::LazyLock, time::Duration};
 
 use anyhow::Result;
 use eframe::egui::{
