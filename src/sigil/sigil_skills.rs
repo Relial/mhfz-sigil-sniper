@@ -8,7 +8,32 @@ use crate::{
     ui::Language,
 };
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromRepr, EnumIter, EnumCount, Serialize, Deserialize)]
+pub enum SpecificEffect {
+    None,
+    Named(&'static str),
+    Points,
+}
+
+impl From<&'static str> for SpecificEffect {
+    fn from(value: &'static str) -> Self {
+        Self::Named(value)
+    }
+}
+
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    FromRepr,
+    EnumIter,
+    EnumCount,
+    Serialize,
+    Deserialize,
+)]
 #[repr(u16)]
 pub enum SigilSkill {
     Empty = 0,
@@ -427,6 +452,134 @@ impl SigilSkill {
         }
     }
 
+    pub fn points_text(&self, language: Language, points: i16) -> Option<SpecificEffect> {
+        match self {
+            SigilSkill::Empty => Some(SpecificEffect::None),
+            SigilSkill::Status => Some(SpecificEffect::None),
+            SigilSkill::Stun => Some(SpecificEffect::None),
+            SigilSkill::ElementalCoatingCrystal => Some(SpecificEffect::None),
+            SigilSkill::BalloonFriend => Some(SpecificEffect::None),
+            SigilSkill::HunterSoul => Some(SpecificEffect::None),
+            SigilSkill::SoulCollection => Some(SpecificEffect::None),
+            SigilSkill::HalkFriend => Some(SpecificEffect::None),
+            SigilSkill::Omnivorous => Some(SpecificEffect::None),
+            SigilSkill::CarvingDivision => Some(SpecificEffect::None),
+            SigilSkill::NoddingOff => Some(SpecificEffect::None),
+            SigilSkill::Decoy => Some(SpecificEffect::None),
+            SigilSkill::Tantrum => Some(SpecificEffect::None),
+            SigilSkill::Unity => Some(SpecificEffect::None),
+            SigilSkill::Support => Some(SpecificEffect::None),
+            SigilSkill::RapidFireAdd => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::SuperRapidFireAdd => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::RapidFireDisable => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::HeatCannonAdd => Some(SpecificEffect::None),
+            SigilSkill::BallistaSaver => Some(SpecificEffect::None),
+            SigilSkill::RawBowBoost => Some(SpecificEffect::None),
+            SigilSkill::RawSnsBoost => Some(SpecificEffect::None),
+            SigilSkill::SonicBombRange => Some(SpecificEffect::None),
+            SigilSkill::TechBoostSnS => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostDb => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostGs => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostLs => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostLance => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostGunlance => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostHammer => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostHorn => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechChangeSnS => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechChangeDb => None,
+            SigilSkill::TechChangeGs => None,
+            SigilSkill::TechChangeLs => None,
+            SigilSkill::TechChangeLance => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechChangeGunlance => None,
+            SigilSkill::TechChangeHammer => None,
+            SigilSkill::TechChangeHorn => None,
+            SigilSkill::TechChangeLbg => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechChangeHbg => None,
+            SigilSkill::TechChangeBow => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::LengthUp => points_named_effect(language, *self, points).map(|v| v.into()),
+            SigilSkill::ShellingChange => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::NoteChange1 => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::NoteChange2 => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::NoteChange3 => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::ArcShotChange => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::RarityChange => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::ShellingLvUp => Some(SpecificEffect::None),
+            SigilSkill::TechBoostBow => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::CatBreeder => Some(SpecificEffect::None),
+            SigilSkill::ShotChange => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::DrawStrengthGs => None,
+            SigilSkill::DrawStrengthHammer => None,
+            SigilSkill::DrawStrengthLance => Some(SpecificEffect::None),
+            SigilSkill::DrawStrengthSns => None,
+            SigilSkill::DrawStrengthDb => None,
+            SigilSkill::DrawStrengthLs => Some(SpecificEffect::None),
+            SigilSkill::DrawStrengthHorn => None,
+            SigilSkill::DrawStrengthGunlance => Some(SpecificEffect::None),
+            SigilSkill::DrawStrengthTonfa => None,
+            SigilSkill::TechBoostTonfa => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::UnsheathedMovementSpeed => Some(SpecificEffect::None),
+            SigilSkill::TechBoostSaf => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::TechBoostHbg => {
+                points_named_effect(language, *self, points).map(|v| v.into())
+            }
+            SigilSkill::ZHeroics => Some(SpecificEffect::None),
+            SigilSkill::RStatus => Some(SpecificEffect::None),
+            SigilSkill::RStun => Some(SpecificEffect::None),
+            SigilSkill::RHealing => Some(SpecificEffect::None),
+            _ => Some(SpecificEffect::Points),
+        }
+    }
+
     pub fn points_options(
         &self,
         recipe: &SigilCraft,
@@ -453,5 +606,414 @@ impl SigilSkill {
             );
         }
         points_options
+    }
+}
+
+pub fn points_named_effect(
+    language: Language,
+    skill: SigilSkill,
+    points: i16,
+) -> Option<&'static str> {
+    match language {
+        Language::English => points_named_effect_en(skill, points),
+        Language::Japanese => points_named_effect_jp(skill, points),
+    }
+}
+
+fn points_named_effect_en(skill: SigilSkill, points: i16) -> Option<&'static str> {
+    match skill {
+        SigilSkill::RapidFireAdd => match points {
+            1 => Some("Normal 1 RF"),
+            2 => Some("Normal 2 RF"),
+            3 => Some("Pierce 1 RF"),
+            4 => Some("Pellet 1 RF"),
+            5 => Some("Crag 1 RF"),
+            6 => Some("Flaming RF"),
+            7 => Some("Water RF"),
+            8 => Some("Thunder RF"),
+            9 => Some("Freeze RF"),
+            _ => None,
+        },
+        SigilSkill::SuperRapidFireAdd => match points {
+            1 => Some("Normal 1 RF+"),
+            2 => Some("Normal 2 RF+"),
+            3 => Some("Pierce 1 RF+"),
+            4 => Some("Pellet 1 RF+"),
+            5 => Some("Crag 1 RF+"),
+            6 => Some("Flaming RF+"),
+            7 => Some("Water RF+"),
+            8 => Some("Thunder RF+"),
+            9 => Some("Freeze RF+"),
+            _ => None,
+        },
+        SigilSkill::RapidFireDisable => match points {
+            1 => Some("Normal 1 RF-"),
+            2 => Some("Normal 2 RF-"),
+            3 => Some("Pierce 1 RF-"),
+            4 => Some("Pellet 1 RF-"),
+            5 => Some("Crag 1 RF-"),
+            6 => Some("Flaming RF-"),
+            7 => Some("Water RF-"),
+            8 => Some("Thunder RF-"),
+            9 => Some("Freeze RF-"),
+            _ => None,
+        },
+        SigilSkill::TechBoostSnS => match points {
+            1 => Some("Sliding Slash"),
+            2 => Some("Shield Bash"),
+            3 => Some("Inf. Slash"),
+            _ => None,
+        },
+        SigilSkill::TechBoostDb => match points {
+            1 => Some("Front Flip"),
+            2 => Some("Lunge Strike"),
+            3 => Some("Clash Sharpen"),
+            _ => None,
+        },
+        SigilSkill::TechBoostGs => match points {
+            1 => Some("Upswing (GS)"),
+            2 => Some("Rotation"),
+            3 => Some("Guard Slash"),
+            _ => None,
+        },
+        SigilSkill::TechBoostLs => match points {
+            1 => Some("Piercing Stab"),
+            2 => Some("Upswing (LS)"),
+            3 => Some("Retreat"),
+            4 => Some("Evade Slash"),
+            _ => None,
+        },
+        SigilSkill::TechBoostLance => match points {
+            1 => Some("Guard Charge"),
+            2 => Some("Charge Finish"),
+            _ => None,
+        },
+        SigilSkill::TechBoostGunlance => match points {
+            1 => Some("Lunge Thrust"),
+            2 => Some("Wide Sweep"),
+            _ => None,
+        },
+        SigilSkill::TechBoostHammer => match points {
+            1 => Some("Power Swing"),
+            2 => Some("Upswing"),
+            3 => Some("Hammer Charge"),
+            _ => None,
+        },
+        SigilSkill::TechBoostHorn => match points {
+            1 => Some("Performance"),
+            2 => Some("Hilt Stab"),
+            _ => None,
+        },
+        SigilSkill::TechChangeSnS => match points {
+            1 => Some("Roundslash"),
+            _ => None,
+        },
+        SigilSkill::TechChangeDb => match points {
+            1 => Some("Clash Sharpen"),
+            _ => None,
+        },
+        SigilSkill::TechChangeLance => match points {
+            1 => Some("Drill Charge"),
+            _ => None,
+        },
+        SigilSkill::TechChangeLbg => match points {
+            1 => Some("Perfect Shot+"),
+            _ => None,
+        },
+        SigilSkill::TechChangeBow => match points {
+            1 => Some("Pierce"),
+            _ => None,
+        },
+        SigilSkill::LengthUp => match points {
+            1 => Some("Length (S&S)"),
+            2 => Some("Length (L)"),
+            3 => Some("Length (GS)"),
+            4 => Some("Length (LS)"),
+            5 => Some("Length (DB)"),
+            6 => Some("Length (H)"),
+            _ => None,
+        },
+        SigilSkill::ShellingChange => match points {
+            1 => Some("Normal"),
+            2 => Some("Wide"),
+            3 => Some("Long"),
+            _ => None,
+        },
+        SigilSkill::NoteChange1 => match points {
+            1 => Some("White Note 1"),
+            2 => Some("Purple Note 1"),
+            3 => Some("Blue Note 1"),
+            4 => Some("Yellow Note 1"),
+            5 => Some("Red Note 1"),
+            6 => Some("Green Note 1"),
+            7 => Some("Sky Note 1"),
+            _ => None,
+        },
+        SigilSkill::NoteChange2 => match points {
+            1 => Some("White Note 2"),
+            2 => Some("Purple Note 2"),
+            3 => Some("Blue Note 2"),
+            4 => Some("Yellow Note 2"),
+            5 => Some("Red Note 2"),
+            6 => Some("Green Note 2"),
+            7 => Some("Sky Note 2"),
+            _ => None,
+        },
+        SigilSkill::NoteChange3 => match points {
+            1 => Some("White Note 3"),
+            2 => Some("Purple Note 3"),
+            3 => Some("Blue Note 3"),
+            4 => Some("Yellow Note 3"),
+            5 => Some("Red Note 3"),
+            6 => Some("Green Note 3"),
+            7 => Some("Sky Note 3"),
+            _ => None,
+        },
+        SigilSkill::ArcShotChange => match points {
+            1 => Some("Wide Arc"),
+            2 => Some("Focus Arc"),
+            3 => Some("Blast Arc"),
+            4 => Some("Slice Arc"),
+            _ => None,
+        },
+        SigilSkill::RarityChange => match points {
+            1 => Some("Rarity 1"),
+            2 => Some("Rarity 2"),
+            3 => Some("Rarity 3"),
+            4 => Some("Rarity 4"),
+            5 => Some("Rarity 5"),
+            6 => Some("Rarity 6"),
+            7 => Some("Rarity 7"),
+            8 => Some("Rarity 8"),
+            9 => Some("Rarity 9"),
+            10 => Some("Rarity 10"),
+            11 => Some("Rarity 11"),
+            12 => Some("Rarity 12"),
+            _ => None,
+        },
+        SigilSkill::TechBoostBow => match points {
+            1 => Some("Uppercut"),
+            _ => None,
+        },
+        SigilSkill::ShotChange => match points {
+            1 => Some("Cluster+"),
+            2 => Some("Impact Shot"),
+            _ => None,
+        },
+        SigilSkill::TechBoostTonfa => match points {
+            1 => Some("EX Gauge"),
+            2 => Some("Combo Timer"),
+            _ => None,
+        },
+        SigilSkill::TechBoostSaf => match points {
+            1 => Some("Stun (SA)"),
+            2 => Some("S.Axe Guard"),
+            3 => Some("S.Axe Charge"),
+            _ => None,
+        },
+        SigilSkill::TechBoostHbg => match points {
+            1 => Some("Heat Gauge+"),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
+fn points_named_effect_jp(skill: SigilSkill, points: i16) -> Option<&'static str> {
+    match skill {
+        SigilSkill::RapidFireAdd => match points {
+            1 => Some("速射 通常弾LV1"),
+            2 => Some("速射 通常弾LV2"),
+            3 => Some("速射 貫通弾LV1"),
+            4 => Some("速射 散弾LV1"),
+            5 => Some("速射 徹甲LV1"),
+            6 => Some("速射 火炎弾"),
+            7 => Some("速射 水冷弾"),
+            8 => Some("速射 電撃弾"),
+            9 => Some("速射 氷結弾"),
+            _ => None,
+        },
+        SigilSkill::SuperRapidFireAdd => match points {
+            1 => Some("超速 通常弾LV1"),
+            2 => Some("超速 通常弾LV2"),
+            3 => Some("超速 貫通弾LV1"),
+            4 => Some("超速 散弾LV1"),
+            5 => Some("超速 徹甲LV1"),
+            6 => Some("超速 火炎弾"),
+            7 => Some("超速 水冷弾"),
+            8 => Some("超速 電撃弾"),
+            9 => Some("超速 氷結弾"),
+            _ => None,
+        },
+        SigilSkill::RapidFireDisable => match points {
+            1 => Some("非速 通常弾LV1"),
+            2 => Some("非速 通常弾LV2"),
+            3 => Some("非速 貫通弾LV1"),
+            4 => Some("非速 散弾LV1"),
+            5 => Some("非速 徹甲LV1"),
+            6 => Some("非速 火炎弾"),
+            7 => Some("非速 水冷弾"),
+            8 => Some("非速 電撃弾"),
+            9 => Some("非速 氷結弾"),
+            _ => None,
+        },
+        SigilSkill::TechBoostSnS => match points {
+            1 => Some("[片手]滑込斬"),
+            2 => Some("[片手]盾攻撃"),
+            3 => Some("[片手]無限連斬"),
+            _ => None,
+        },
+        SigilSkill::TechBoostDb => match points {
+            1 => Some("[双剣]縦回転斬"),
+            2 => Some("[双剣]斬り払い"),
+            3 => Some("[双剣]刃打術"),
+            _ => None,
+        },
+        SigilSkill::TechBoostGs => match points {
+            1 => Some("[大剣]斬り上げ"),
+            2 => Some("[大剣]薙ぎ払い"),
+            3 => Some("[大剣]ガード斬"),
+            _ => None,
+        },
+        SigilSkill::TechBoostLs => match points {
+            1 => Some("[太刀]貫刺し"),
+            2 => Some("[太刀]斬り上げ"),
+            3 => Some("[太刀]後退斬"),
+            4 => Some("[太刀]瞬斬"),
+            _ => None,
+        },
+        SigilSkill::TechBoostLance => match points {
+            1 => Some("[槍]盾攻撃"),
+            2 => Some("[槍]突進止撃"),
+            _ => None,
+        },
+        SigilSkill::TechBoostGunlance => match points {
+            1 => Some("[銃槍]踏込斬上"),
+            2 => Some("[銃槍]踏込薙払"),
+            _ => None,
+        },
+        SigilSkill::TechBoostHammer => match points {
+            1 => Some("[鎚]振り抜き"),
+            2 => Some("[鎚]振り上げ"),
+            3 => Some("[鎚]溜移動術"),
+            _ => None,
+        },
+        SigilSkill::TechBoostHorn => match points {
+            1 => Some("[笛]演奏攻撃"),
+            2 => Some("[笛]つか殴り"),
+            _ => None,
+        },
+        SigilSkill::TechChangeSnS => match points {
+            1 => Some("[片手]真空回転斬"),
+            _ => None,
+        },
+        SigilSkill::TechChangeDb => match points {
+            1 => Some("Clash Sharpen"),
+            _ => None,
+        },
+        SigilSkill::TechChangeLance => match points {
+            1 => Some("[槍]ドリル突進"),
+            _ => None,
+        },
+        SigilSkill::TechChangeLbg => match points {
+            1 => Some("[軽銃]Jゲージ"),
+            _ => None,
+        },
+        SigilSkill::TechChangeBow => match points {
+            1 => Some("[弓]貫薙弓"),
+            _ => None,
+        },
+        SigilSkill::LengthUp => match points {
+            1 => Some("[片手]蒼輝剣"),
+            2 => Some("[槍]蒼輝槍"),
+            3 => Some("[大剣]蒼輝大剣"),
+            4 => Some("[太刀]蒼輝刀"),
+            5 => Some("[双剣]蒼輝双剣"),
+            6 => Some("[鎚]蒼輝鎚"),
+            _ => None,
+        },
+        SigilSkill::ShellingChange => match points {
+            1 => Some("砲撃[通常型]"),
+            2 => Some("砲撃[拡散型]"),
+            3 => Some("砲撃[放射型]"),
+            _ => None,
+        },
+        SigilSkill::NoteChange1 => match points {
+            1 => Some("旋律１[白]"),
+            2 => Some("旋律１[紫]"),
+            3 => Some("旋律１[青]"),
+            4 => Some("旋律１[黄]"),
+            5 => Some("旋律１[赤]"),
+            6 => Some("旋律１[緑]"),
+            7 => Some("旋律１[空]"),
+            _ => None,
+        },
+        SigilSkill::NoteChange2 => match points {
+            1 => Some("旋律２[白]"),
+            2 => Some("旋律２[紫]"),
+            3 => Some("旋律２[青]"),
+            4 => Some("旋律２[黄]"),
+            5 => Some("旋律２[赤]"),
+            6 => Some("旋律２[緑]"),
+            7 => Some("旋律２[空]"),
+            _ => None,
+        },
+        SigilSkill::NoteChange3 => match points {
+            1 => Some("旋律３[白]"),
+            2 => Some("旋律３[紫]"),
+            3 => Some("旋律３[青]"),
+            4 => Some("旋律３[黄]"),
+            5 => Some("旋律３[赤]"),
+            6 => Some("旋律３[緑]"),
+            7 => Some("旋律３[空]"),
+            _ => None,
+        },
+        SigilSkill::ArcShotChange => match points {
+            1 => Some("曲射[放散型]"),
+            2 => Some("曲射[集中型]"),
+            3 => Some("曲射[爆裂型]"),
+            4 => Some("曲射[切断型]"),
+            _ => None,
+        },
+        SigilSkill::RarityChange => match points {
+            1 => Some("レア度１"),
+            2 => Some("レア度２"),
+            3 => Some("レア度３"),
+            4 => Some("レア度４"),
+            5 => Some("レア度５"),
+            6 => Some("レア度６"),
+            7 => Some("レア度７"),
+            8 => Some("レア度８"),
+            9 => Some("レア度９"),
+            10 => Some("レア度１０"),
+            11 => Some("レア度１１"),
+            12 => Some("レア度１２"),
+            _ => None,
+        },
+        SigilSkill::TechBoostBow => match points {
+            1 => Some("[弓]昇龍弓"),
+            _ => None,
+        },
+        SigilSkill::ShotChange => match points {
+            1 => Some("[拡散弾]大爆発"),
+            2 => Some("[散弾]打撃弾"),
+            _ => None,
+        },
+        SigilSkill::TechBoostTonfa => match points {
+            1 => Some("[棍]ＥＸゲージ"),
+            2 => Some("[棍]Ｃタイマー"),
+            _ => None,
+        },
+        SigilSkill::TechBoostSaf => match points {
+            1 => Some("[剣斧]爆発気絶"),
+            2 => Some("[剣斧]ガード"),
+            3 => Some("[剣斧]溜移動術"),
+            _ => None,
+        },
+        SigilSkill::TechBoostHbg => match points {
+            1 => Some("[重銃]砲熱Ｇ"),
+            _ => None,
+        },
+        _ => None,
     }
 }

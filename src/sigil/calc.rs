@@ -4,9 +4,9 @@ use serde::{Deserialize, Serialize};
 use strum::{FromRepr, IntoEnumIterator};
 
 use crate::{
-    prng::Lcg,
+    rng::Lcg,
     sigil::{
-        recipe::{MOSTLY_RELIABLE, RARITY, RELIABLE},
+        recipe::{MOSTLY_RELIABLE, RARITY, RELIABLE, UNSUPPORTED},
         sigil_skills::SigilSkill,
     },
 };
@@ -169,6 +169,7 @@ pub enum RecipeSupport {
     Low,
     ZAoe,
     Rarity,
+    Unsupported,
 }
 
 impl RecipeSupport {
@@ -181,6 +182,8 @@ impl RecipeSupport {
             Self::ZAoe
         } else if RARITY.contains(&recipe_idx) {
             Self::Rarity
+        } else if UNSUPPORTED.contains(&recipe_idx) {
+            Self::Unsupported
         } else {
             Self::Low
         }

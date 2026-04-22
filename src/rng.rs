@@ -13,6 +13,14 @@ impl Lcg {
     }
 
     #[inline(always)]
+    pub fn advance_n(&mut self, n: usize) -> u32 {
+        for _ in 0..n {
+            self.advance();
+        }
+        self.0
+    }
+
+    #[inline(always)]
     pub fn low_byte(&self) -> u8 {
         (self.0 & 0xFF) as u8
     }

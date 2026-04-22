@@ -1,7 +1,7 @@
 use std::ops::RangeInclusive;
 
 use crate::{
-    prng::Lcg,
+    rng::Lcg,
     sigil::{
         calc::{BaseSkillRanges, RedRollRequirement, Sigil, SigilCraft},
         sigil_skills::SigilSkill,

@@ -6,11 +6,13 @@ pub const RELIABLE: [usize; 48] = [
     371, 372, 373, 374, 375, 376, 377, 378, 379, 380,
 ];
 
-pub const MOSTLY_RELIABLE: [usize; 15] = [
-    300, 301, 302, 304, 306, 308, 310, 312, 314, 318, 328, 330, 348, 349, 364,
+pub const MOSTLY_RELIABLE: [usize; 14] = [
+    300, 301, 302, 304, 306, 308, 310, 312, 314, 318, 328, 330, 348, 349,
 ];
 
 pub const RARITY: [usize; 12] = [352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363];
+
+pub const UNSUPPORTED: [usize; 7] = [364, 365, 366, 367, 368, 369, 370];
 
 const RECIPE_NAME: [&str; 381] = [
     "ほねほねレシピ",
@@ -791,5 +793,19 @@ pub fn rarity_recipe_name(language: Language) -> &'static str {
     match language {
         Language::English => "Rarity",
         Language::Japanese => "レア度",
+    }
+}
+
+pub fn zenith_resistance_recipe_name(language: Language) -> &'static str {
+    match language {
+        Language::English => "Res",
+        Language::Japanese => "耐性",
+    }
+}
+
+pub fn zenith_heroics_recipe_name(language: Language) -> &'static str {
+    match language {
+        Language::English => "Heroics",
+        Language::Japanese => "豪傑",
     }
 }

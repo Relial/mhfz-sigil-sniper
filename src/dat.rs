@@ -42,7 +42,7 @@ impl SigilData {
         Ok(())
     }
 
-    pub fn from_mhfdat(mhfdat_path: &Path) -> Result<Self> {
+    pub fn from_mhfdat(mhfdat_path: impl AsRef<Path>) -> Result<Self> {
         let (recipes, skill_ranges): (Vec<SigilCraft>, Vec<BaseSkillRanges>) = {
             let mhfdat_path = PathBuf::from("./mhfdat.bin");
             let mhfdat = Mhfdat::load(&mhfdat_path)?;

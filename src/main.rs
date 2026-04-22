@@ -9,7 +9,7 @@ use eframe::{
 use crate::{dat::SigilData, ui::UiState};
 
 mod dat;
-mod prng;
+mod rng;
 mod sigil;
 mod ui;
 
@@ -44,6 +44,8 @@ fn main() -> Result<()> {
         options,
         Box::new(|ctx| {
             ctx.egui_ctx.set_theme(Theme::Dark);
+            ctx.egui_ctx
+                .all_styles_mut(|style| style.interaction.tooltip_delay = 0.1);
             add_font(&ctx.egui_ctx);
             Ok(Box::new(UiState::new(sigil_data)))
         }),
