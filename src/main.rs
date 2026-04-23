@@ -36,7 +36,7 @@ fn main() -> Result<()> {
     let options = eframe::NativeOptions {
         viewport: ViewportBuilder::default()
             .with_icon(IconData::default())
-            .with_inner_size([700.0, 800.0]),
+            .with_inner_size([800.0, 800.0]),
         ..Default::default()
     };
     eframe::run_native(
@@ -45,8 +45,9 @@ fn main() -> Result<()> {
         Box::new(|ctx| {
             ctx.egui_ctx.set_theme(Theme::Dark);
             ctx.egui_ctx
-                .all_styles_mut(|style| style.interaction.tooltip_delay = 0.1);
+                .all_styles_mut(|style| style.interaction.tooltip_delay = 0.0);
             add_font(&ctx.egui_ctx);
+            egui_extras::install_image_loaders(&ctx.egui_ctx);
             Ok(Box::new(UiState::new(sigil_data)))
         }),
     )

@@ -4,6 +4,7 @@ use anyhow::Result;
 use eframe::egui::{
     self, Align, Align2, Button, CollapsingHeader, Color32, ComboBox, DragValue, FontId, Frame,
     Grid, Layout, Margin, Panel, Rect, RichText, ScrollArea, Sense, Stroke, Ui, UiBuilder, Vec2,
+    include_image,
 };
 use jiff::{
     RoundMode, Span, SpanRelativeTo, SpanRound, SpanTotal, Timestamp, ToSpan, Unit, Zoned,
@@ -678,7 +679,9 @@ impl UiState {
                     FontId::proportional(info_font_size),
                     text_color,
                 );
-                resp.on_hover_text("These recipes will always give you the predicted result.")
+                if resp.contains_pointer() {
+                    resp.show_tooltip_text("These recipes will always give you the predicted result.");
+                }
             });
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
@@ -694,9 +697,9 @@ impl UiState {
                     FontId::proportional(info_font_size),
                     text_color,
                 );
-                resp.on_hover_text(
-                    "These recipes can't be fully predicted due to being able to roll from the non-standard table.\nUsually these will still be correctly predicted.",
-                )
+                if resp.contains_pointer() {
+                    resp.show_tooltip_text("These recipes can't be fully predicted due to being able to roll from the non-standard table.\nUsually these will still be correctly predicted.");
+                }
             });
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
@@ -712,9 +715,9 @@ impl UiState {
                     FontId::proportional(info_font_size),
                     text_color,
                 );
-                resp.on_hover_text(
-                    "These recipes use a random budget component that can't be predicted.\nPredictions are made with the assumption you roll the maximum budget.\nIf you roll max budget these become mostly predictable.",
-                )
+                if resp.contains_pointer() {
+                    resp.show_tooltip_text("These recipes use a random budget component that can't be predicted.\nPredictions are made with the assumption you roll the maximum budget.\nIf you roll max budget these become mostly predictable.");
+                }
             });
 
             ui.end_row();
@@ -733,9 +736,9 @@ impl UiState {
                     FontId::proportional(info_font_size),
                     text_color,
                 );
-                resp.on_hover_text(
-                    "This recipe's point ranges can be reliably predicted, but which skills you get cannot.\nAs such, the results predicted from this only apply if the slot rolls something with a point value.",
-                )
+                if resp.contains_pointer() {
+                    resp.show_tooltip_text("This recipe's point ranges can be reliably predicted, but which skills you get cannot.\nAs such, the results predicted from this only apply if the slot rolls something with a point value.");
+                }
             });
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
@@ -751,9 +754,9 @@ impl UiState {
                     FontId::proportional(info_font_size),
                     text_color,
                 );
-                resp.on_hover_text(
-                    "These recipes always roll the same result. They're used heavily in the sniping process to advance rng in a predictable way, but they can't be used for offset finding because the result never varies.",
-                )
+                if resp.contains_pointer() {
+                    resp.show_tooltip_text("These recipes always roll the same result. They're used heavily in the sniping process to advance rng in a predictable way, but they can't be used for offset finding because the result never varies.");
+                }
             });
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
@@ -769,9 +772,9 @@ impl UiState {
                     FontId::proportional(info_font_size),
                     text_color,
                 );
-                resp.on_hover_text(
-                    "These technically aren't any different from other recipes but due to being in their own category they're more restrictive to snipe and would require their own handling. They're not very good sigils anyway.",
-                )
+                if resp.contains_pointer() {
+                    resp.show_tooltip_text("These technically aren't any different from other recipes but due to being in their own category they're more restrictive to snipe and would require their own handling. They're not very good sigils anyway.");
+                }
             });
         });
 
@@ -904,7 +907,7 @@ impl UiState {
         let Some(target) = state.target else {
             return;
         };
-        ui.label("Craft sigils 1 at a time");
+        ui.label("Craft sigils 1 at a time. Do not back out of the recipe list or change the time above after you've started crafting.");
         let possible_offsets = state
             .offset_candidates
             .map(|count| count.to_string())
@@ -1422,19 +1425,93 @@ impl UiState {
         ui.label("0. Use diva song buffs and the Find desync tab to find any time desync with the server. If your system time is properly updated and you play on a reasonable server you can probably skip this.");
         ui.label("Regardless of overall time sync, you can expect the game's timestamp to be slightly behind your system's. It's recommended to feel out the timing with some 0 search depth snipes.");
         ui.label("1. Select a recipe for offset finding. This should be one of the 100% predictable recipes, and does not need to be the recipe you want to snipe.");
-        ui.label(
-            "2. In-game open the sigil recipe list and input the time you opened it in the Find offset tab.",
-        );
+        ui.horizontal_wrapped(|ui| {
+            ui.spacing_mut().item_spacing.x = 0.0;
+            ui.label("2. In-game open ");
+            let resp = ui.link("the sigil recipe list");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/recipe_list.png"));
+                });
+            }
+            ui.label(
+                " and input the time you opened it in the Find offset tab. This must be done from ",
+            );
+            let resp =
+                ui.link("the menu where you pick a sigil type to craft before the recipe list");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/before_recipe_list.png"));
+                });
+            }
+            ui.label(", not after crafting a sigil.");
+        });
         ui.label("3. Craft the selected sigil 1 at a time and input the result into the tool until an offset is found. Don't make a batch of more than 1 sigil.");
         ui.label("If no offset is found but all inputs are correct, your system clock is out of sync with the server's. Go to step 0.");
         ui.label(
             "The offset you find will persist until you make a sigil, through quests and logouts.",
         );
-        ui.label("4. You can now choose a sigil to snipe. Enter what you want into the Snipe tab and press Snipe, then open the sigil recipe list at a time given by one of the results.");
-        ui.label("5. Craft sigils according to the sequence shown. \"10x - 2 times\" means craft a batch of 10 twice. \"8x -> 1x -> 1x\" means craft an 8 batch, then a 1 batch, then a 1 batch.");
-        ui.label("5.1 Normal sigil: The sequence will tell you to use Rarity sigils. These are the white recipes at the end of the recipe list. You can buy the materials with RDP, GCP or N points.");
-        ui.label("5.2 Zenith sigil: The sequence will tell you to use Resistance and/or Heroics sigils. Any Resistance recipe works.");
-        ui.label("6. Finally, craft your snipe target.");
+        ui.horizontal_wrapped(|ui| {
+            ui.spacing_mut().item_spacing.x = 0.0;
+            ui.label("4. You can now choose a sigil to snipe. Enter what you want into the Snipe tab and press Snipe, then open ");
+            let resp = ui.link("the sigil recipe list");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/recipe_list.png"));
+                });
+            }
+            ui.label(" at a time given by one of the results. Again, this must be done from ");
+            let resp =
+                ui.link("the menu where you pick a sigil type.");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/before_recipe_list.png"));
+                });
+            }
+        });
+        ui.horizontal_wrapped(|ui| {
+            ui.spacing_mut().item_spacing.x = 0.0;
+            ui.label("5. Craft sigils according to the sequence shown. \"10x - 2 times\" means craft ");
+            let resp = ui.link("a batch of 10");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/rarity_batch.png"));
+                });
+            }
+            ui.label(" twice. \"8x -> 1x -> 1x\" means craft an 8 batch, then a 1 batch, then a 1 batch. Do not back out of the menu in between batches.");
+        });
+        ui.horizontal_wrapped(|ui| {
+            ui.spacing_mut().item_spacing.x = 0.0;
+            ui.label(
+                "5.1 Normal sigil: The sequence will tell you to use Rarity sigils. These are ",
+            );
+            let resp = ui.link("the white recipes at the end of the recipe list");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/rarity_batch.png"));
+                });
+            }
+            ui.label(". You can buy the materials with RDP, GCP or N points.");
+        });
+        ui.horizontal_wrapped(|ui| {
+            ui.spacing_mut().item_spacing.x = 0.0;
+            ui.label("5.2 Zenith sigil: The sequence will tell you to use ");
+            let resp = ui.link("Resistance");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/zenith_resist.png"));
+                });
+            }
+            ui.label(" and/or ");
+            let resp = ui.link("Heroics");
+            if resp.contains_pointer() {
+                resp.show_tooltip_ui(|ui| {
+                    ui.image(include_image!("../img/zenith_heroics.png"));
+                });
+            }
+            ui.label(" sigils. Any Resistance recipe works.");
+        });
+        ui.label("6. Craft your snipe target. If you didn't get what you were sniping for, check the early/late seeds dropdown. If what you got is there, adjust your timing based on how early/late you were. If it's not there, there was some bigger issue.");
     }
 }
 
