@@ -938,112 +938,129 @@ impl UiState {
         possible_skills.sort();
         possible_skills.dedup();
         ui.push_id("Offset finder sigils", |ui| {
-            for (sigil_i, crafted) in state.crafted_sigils.iter_mut().enumerate() {
-                ui.horizontal_top(|ui| {
-                    Frame::new()
-                        .stroke(stroke)
-                        .inner_margin(4.0)
-                        .show(ui, |ui| {
-                            Grid::new(sigil_i).show(ui, |ui| {
-                                for (roll_i, roll_option) in crafted.rolls.iter_mut().enumerate() {
-                                    if let Some(roll) = roll_option {
-                                        let old = roll.skill;
-                                        ComboBox::from_id_salt((sigil_i, roll_i))
-                                            .width(150.0)
-                                            .selected_text(roll.skill.name(self.language))
-                                            .show_ui(ui, |ui| {
-                                                for possible_skill in &possible_skills {
-                                                    if ui
-                                                        .selectable_value(
-                                                            &mut roll.skill,
-                                                            *possible_skill,
-                                                            possible_skill.name(self.language),
-                                                        )
-                                                        .clicked()
-                                                    {
-                                                        roll.points = 1;
-                                                    }
-                                                }
-                                                ui.separator();
-                                                for skill in &recipe.not_blacklisted {
-                                                    if ui
-                                                        .selectable_value(
-                                                            &mut roll.skill,
-                                                            *skill,
-                                                            skill.name(self.language),
-                                                        )
-                                                        .clicked()
-                                                    {
-                                                        roll.points = 1;
-                                                    }
-                                                }
-                                            });
-                                        if roll.skill != old {
-                                            calc = true;
-                                        }
-                                        if let Some(points_effect) =
-                                            roll.skill.points_text(self.language, roll.points)
-                                        {
-                                            match points_effect {
-                                                SpecificEffect::None => {}
-                                                SpecificEffect::Named(name) => {
-                                                    ComboBox::from_id_salt((
-                                                        sigil_i,
-                                                        roll_i,
-                                                        "points name",
-                                                    ))
-                                                    .width(150.0)
-                                                    .selected_text(name)
-                                                    .show_ui(ui, |ui| {
-                                                        for point in 1..13 {
-                                                            if let Some(name) = points_named_effect(
-                                                                self.language,
-                                                                roll.skill,
-                                                                point,
-                                                            ) {
-                                                                ui.selectable_value(
-                                                                    &mut roll.points,
-                                                                    point,
-                                                                    name,
-                                                                );
-                                                            }
+            ScrollArea::vertical().show(ui, |ui| {
+                ui.take_available_space();
+                for (sigil_i, crafted) in state.crafted_sigils.iter_mut().enumerate() {
+                    ui.horizontal_top(|ui| {
+                        Frame::new()
+                            .stroke(stroke)
+                            .inner_margin(4.0)
+                            .show(ui, |ui| {
+                                Grid::new(sigil_i).show(ui, |ui| {
+                                    for (roll_i, roll_option) in
+                                        crafted.rolls.iter_mut().enumerate()
+                                    {
+                                        if let Some(roll) = roll_option {
+                                            let old = roll.skill;
+                                            ComboBox::from_id_salt((sigil_i, roll_i))
+                                                .width(150.0)
+                                                .selected_text(roll.skill.name(self.language))
+                                                .show_ui(ui, |ui| {
+                                                    for possible_skill in &possible_skills {
+                                                        if ui
+                                                            .selectable_value(
+                                                                &mut roll.skill,
+                                                                *possible_skill,
+                                                                possible_skill.name(self.language),
+                                                            )
+                                                            .clicked()
+                                                        {
+                                                            roll.points = 1;
                                                         }
-                                                    });
-                                                }
-                                                SpecificEffect::Points => {
-                                                    let resp = ui.add(
-                                                        DragValue::new(&mut roll.points)
-                                                            .range(-10..=20)
-                                                            .speed(0.02),
-                                                    );
-                                                    if resp.lost_focus() || resp.drag_stopped() {
-                                                        calc = true;
+                                                    }
+                                                    ui.separator();
+                                                    for skill in &recipe.not_blacklisted {
+                                                        if ui
+                                                            .selectable_value(
+                                                                &mut roll.skill,
+                                                                *skill,
+                                                                skill.name(self.language),
+                                                            )
+                                                            .clicked()
+                                                        {
+                                                            roll.points = 1;
+                                                        }
+                                                    }
+                                                });
+                                            if roll.skill != old {
+                                                calc = true;
+                                            }
+                                            if let Some(points_effect) =
+                                                roll.skill.points_text(self.language, roll.points)
+                                            {
+                                                match points_effect {
+                                                    SpecificEffect::None => {}
+                                                    SpecificEffect::Named(name) => {
+                                                        ComboBox::from_id_salt((
+                                                            sigil_i,
+                                                            roll_i,
+                                                            "points name",
+                                                        ))
+                                                        .width(150.0)
+                                                        .selected_text(name)
+                                                        .show_ui(ui, |ui| {
+                                                            for point in 1..13 {
+                                                                if let Some(name) =
+                                                                    points_named_effect(
+                                                                        self.language,
+                                                                        roll.skill,
+                                                                        point,
+                                                                    )
+                                                                {
+                                                                    ui.selectable_value(
+                                                                        &mut roll.points,
+                                                                        point,
+                                                                        name,
+                                                                    );
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                    SpecificEffect::Points => {
+                                                        let resp = ui.add(
+                                                            DragValue::new(&mut roll.points)
+                                                                .range(-10..=20)
+                                                                .speed(0.02),
+                                                        );
+                                                        if resp.lost_focus() || resp.drag_stopped()
+                                                        {
+                                                            calc = true;
+                                                        }
                                                     }
                                                 }
+                                            } else {
+                                                ui.label("Invalid");
                                             }
                                         } else {
-                                            ui.label("Invalid");
+                                            if ComboBox::from_id_salt((sigil_i, roll_i))
+                                                .width(150.0)
+                                                .show_ui(ui, |_| {})
+                                                .response
+                                                .clicked()
+                                            {
+                                                let skill =
+                                                    possible_skills.first().unwrap_or_else(|| {
+                                                        recipe
+                                                            .not_blacklisted
+                                                            .first()
+                                                            .expect("No possible skills on sigil")
+                                                    });
+                                                *roll_option = Some(OffsetSigilRoll::new(*skill));
+                                            }
                                         }
-                                    } else {
-                                        if ComboBox::from_id_salt((sigil_i, roll_i))
-                                            .width(150.0)
-                                            .show_ui(ui, |_| {})
-                                            .response
-                                            .clicked()
-                                            && let Some(first) = possible_skills.first()
-                                        {
-                                            *roll_option = Some(OffsetSigilRoll::new(*first));
-                                        }
+                                        ui.end_row();
                                     }
-                                    ui.end_row();
-                                }
+                                });
                             });
-                        });
-                    if ui.add(Button::new("❌").frame(false)).clicked() {
-                        remove = Some(sigil_i);
-                    }
-                });
-            }
+                        if ui.add(Button::new("❌").frame(false)).clicked() {
+                            remove = Some(sigil_i);
+                        }
+                    });
+                }
+                if ui.button("Add").clicked() {
+                    state.crafted_sigils.push(OffsetSigil::new());
+                }
+            });
         });
         if let Some(remove) = remove {
             state.crafted_sigils.remove(remove);
@@ -1077,9 +1094,6 @@ impl UiState {
                     state.found_seed_offset = None;
                 }
             }
-        }
-        if ui.button("Add").clicked() {
-            state.crafted_sigils.push(OffsetSigil::new());
         }
     }
 
@@ -1217,9 +1231,27 @@ impl UiState {
                         });
                     }
                     if state.requirements.len() < 3 && ui.button("Add requirement").clicked() {
-                        state
-                            .requirements
-                            .push(recipe.normal_rolls.first().unwrap().skill_roll.clone());
+                        let roll = recipe
+                            .normal_rolls
+                            .first()
+                            .map(|craft_roll| craft_roll.skill_roll.clone())
+                            .unwrap_or_else(|| {
+                                let skill = recipe
+                                    .not_blacklisted
+                                    .first()
+                                    .expect("Recipe with no possible skills");
+                                let ranges =
+                                    &self.sigil_data.skill_ranges[*skill as usize].points_ranges;
+                                let points = ranges
+                                    .first()
+                                    .map(|range| range.points_range.clone())
+                                    .unwrap_or(0..=0);
+                                SkillRoll {
+                                    skill: *skill,
+                                    points,
+                                }
+                            });
+                        state.requirements.push(roll);
                     }
                 });
         });
@@ -1388,6 +1420,7 @@ impl UiState {
     fn info(&mut self, ui: &mut Ui) {
         ui.heading("How to use");
         ui.label("0. Use diva song buffs and the Find desync tab to find any time desync with the server. If your system time is properly updated and you play on a reasonable server you can probably skip this.");
+        ui.label("Regardless of overall time sync, you can expect the game's timestamp to be slightly behind your system's. It's recommended to feel out the timing with some 0 search depth snipes.");
         ui.label("1. Select a recipe for offset finding. This should be one of the 100% predictable recipes, and does not need to be the recipe you want to snipe.");
         ui.label(
             "2. In-game open the sigil recipe list and input the time you opened it in the Find offset tab.",
