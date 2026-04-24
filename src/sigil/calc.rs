@@ -339,7 +339,7 @@ impl SigilCraft {
             let available_ranges: Vec<_> = skill_ranges
                 .points_ranges
                 .iter()
-                .filter(|range_budget| range_budget.budget < budget)
+                .filter(|range_budget| range_budget.budget != 0 && range_budget.budget < budget)
                 .collect();
             if !available_ranges.is_empty() {
                 let range_choise_rng = rng.advance();
