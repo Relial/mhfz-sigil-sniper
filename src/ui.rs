@@ -1123,7 +1123,7 @@ impl UiState {
                     ZenithStrategy::Resistance,
                     zenith_resistance_recipe_name(self.language),
                 )
-                .on_hover_text("Any Zenith Resistance sigil");
+                .on_hover_text("Any Zenith Resistance sigil. Zenith Heroics sigils may be needed at the end of a sequence in some cases.");
                 ui.selectable_value(
                     &mut state.zenith_strategy,
                     ZenithStrategy::Heroics,
