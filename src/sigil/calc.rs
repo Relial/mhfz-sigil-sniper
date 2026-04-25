@@ -266,10 +266,13 @@ impl SigilCraft {
         let mut current_points_ranges = Vec::new();
         let mut remaining_budget = *self.budget.end();
 
-        for _ in 0..3 {
+        for i in 0..3 {
             let mut total_chance = 0;
             let budget_rng = rng.advance();
-            let budget_value = (budget_rng % remaining_budget as u32) as u8;
+            let mut budget_value = (budget_rng % remaining_budget as u32) as u8;
+            if i == 2 && current_skills.is_empty() {
+                budget_value = remaining_budget;
+            }
             let roll_rng = rng.advance();
             let roll_value = (roll_rng % 100) as u8;
             if !self.normal_rolls.iter().any(|roll| {
