@@ -261,6 +261,7 @@ impl DesyncFinderState {
 
 #[derive(Debug, Clone, Copy)]
 struct SearchSettings {
+    search_days: u8,
     search_hours: u8,
     search_minutes: u8,
     search_seconds: u8,
@@ -270,6 +271,7 @@ struct SearchSettings {
 impl Default for SearchSettings {
     fn default() -> Self {
         Self {
+            search_days: 0,
             search_hours: 1,
             search_minutes: 0,
             search_seconds: 0,
@@ -1135,13 +1137,19 @@ impl UiState {
         ui.horizontal(|ui| {
             ui.label("Search ahead: ");
             Grid::new("search_time").show(ui, |ui| {
+                ui.label("Days");
                 ui.label("Hours");
                 ui.label("Minutes");
                 ui.label("Seconds");
 
                 ui.end_row();
 
-                ui.add(DragValue::new(&mut state.search_settings.search_hours).speed(0.02));
+                ui.add(DragValue::new(&mut state.search_settings.search_days).speed(0.02));
+                ui.add(
+                    DragValue::new(&mut state.search_settings.search_hours)
+                        .speed(0.02)
+                        .range(0..=23),
+                );
                 ui.add(
                     DragValue::new(&mut state.search_settings.search_minutes)
                         .speed(0.02)
@@ -1265,7 +1273,8 @@ impl UiState {
         if ui.add_sized([100.0, 20.0], Button::new("Snipe")).clicked() {
             state.selected_result = None;
             let s = &state.search_settings;
-            let seed_count = s.search_hours as usize * 60 * 60
+            let seed_count = s.search_days as usize * 24 * 60 * 60
+                + s.search_hours as usize * 60 * 60
                 + s.search_minutes as usize * 60
                 + s.search_seconds as usize;
             state.results = snipe(
