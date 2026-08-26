@@ -343,7 +343,7 @@ impl ZenithResistanceSequence {
             rng.advance();
             rng.advance();
             let resistance_roll = rng.advance() % 100;
-            resistance_roll >= 92
+            resistance_roll < 8
         }
 
         if advances < 5 {
@@ -507,12 +507,12 @@ fn find_zenith_extra_sequence(rng: &Lcg, advances: usize) -> (Vec<usize>, usize)
 
     match advances {
         13 => {
-            let ten = { rng.advance_n(3) >= 92 };
-            let seven = { rng.advance_n(3) >= 92 };
-            let six = rng.advance() >= 92;
-            let four = { rng.advance_n(2) >= 92 };
-            let two = { rng.advance_n(2) >= 92 };
-            let one = rng.advance() >= 92;
+            let ten = rng.advance_n(3) % 100 < 8;
+            let seven = rng.advance_n(3) % 100 < 8;
+            let six = rng.advance() % 100 < 8;
+            let four = rng.advance_n(2) % 100 < 8;
+            let two = rng.advance_n(2) % 100 < 8;
+            let one = rng.advance() % 100 < 8;
 
             let double = ten || seven;
             if double && two {
@@ -529,11 +529,11 @@ fn find_zenith_extra_sequence(rng: &Lcg, advances: usize) -> (Vec<usize>, usize)
             }
         }
         14 => {
-            let eleven = { rng.advance_n(3) >= 92 };
-            let eight = { rng.advance_n(3) >= 92 };
-            let five = { rng.advance_n(3) >= 92 };
-            let two = { rng.advance_n(3) >= 92 };
-            let one = rng.advance() >= 92;
+            let eleven = rng.advance_n(3) % 100 < 8;
+            let eight = rng.advance_n(3) % 100 < 8;
+            let five = rng.advance_n(3) % 100 < 8;
+            let two = rng.advance_n(3) % 100 < 8;
+            let one = rng.advance() % 100 < 8;
 
             if eleven || eight || five || two {
                 return (vec![4], 0);
@@ -543,13 +543,13 @@ fn find_zenith_extra_sequence(rng: &Lcg, advances: usize) -> (Vec<usize>, usize)
             }
         }
         15 => {
-            let twelve = { rng.advance_n(3) >= 92 };
-            let nine = { rng.advance_n(3) >= 92 };
-            let seven = { rng.advance_n(2) >= 92 };
-            let six = rng.advance() >= 92;
-            let five = rng.advance() >= 92;
-            let two = { rng.advance_n(3) >= 92 };
-            let one = rng.advance() >= 92;
+            let twelve = rng.advance_n(3) % 100 < 8;
+            let nine = rng.advance_n(3) % 100 < 8;
+            let seven = rng.advance_n(2) % 100 < 8;
+            let six = rng.advance() % 100 < 8;
+            let five = rng.advance() % 100 < 8;
+            let two = rng.advance_n(3) % 100 < 8;
+            let one = rng.advance() % 100 < 8;
 
             if twelve && seven && two {
                 return (vec![1, 1, 1], 0);
@@ -573,14 +573,14 @@ fn find_zenith_extra_sequence(rng: &Lcg, advances: usize) -> (Vec<usize>, usize)
             }
         }
         16 => {
-            let thirteen = { rng.advance_n(3) >= 92 };
-            let ten = { rng.advance_n(3) >= 92 };
-            let nine = rng.advance() >= 92;
-            let seven = { rng.advance_n(2) >= 92 };
-            let six = rng.advance() >= 92;
-            let four = { rng.advance_n(2) >= 92 };
-            let two = { rng.advance_n(2) >= 92 };
-            let one = rng.advance() >= 92;
+            let thirteen = rng.advance_n(3) % 100 < 8;
+            let ten = rng.advance_n(3) % 100 < 8;
+            let nine = rng.advance() % 100 < 8;
+            let seven = rng.advance_n(2) % 100 < 8;
+            let six = rng.advance() % 100 < 8;
+            let four = rng.advance_n(2) % 100 < 8;
+            let two = rng.advance_n(2) % 100 < 8;
+            let one = rng.advance() % 100 < 8;
 
             let triple = thirteen || ten || seven;
             if triple && two {
@@ -601,14 +601,14 @@ fn find_zenith_extra_sequence(rng: &Lcg, advances: usize) -> (Vec<usize>, usize)
             }
         }
         17 => {
-            let fourteen = { rng.advance_n(3) >= 92 };
-            let eleven = { rng.advance_n(3) >= 92 };
-            let ten = rng.advance() >= 92;
-            let eight = { rng.advance_n(2) >= 92 };
-            let six = { rng.advance_n(2) >= 92 };
-            let five = rng.advance() >= 92;
-            let two = { rng.advance_n(3) >= 92 };
-            let one = rng.advance() >= 92;
+            let fourteen = rng.advance_n(3) % 100 < 8;
+            let eleven = rng.advance_n(3) % 100 < 8;
+            let ten = rng.advance() % 100 < 8;
+            let eight = rng.advance_n(2) % 100 < 8;
+            let six = rng.advance_n(2) % 100 < 8;
+            let five = rng.advance() % 100 < 8;
+            let two = rng.advance_n(3) % 100 < 8;
+            let one = rng.advance() % 100 < 8;
 
             if fourteen || eleven || eight || five || two {
                 return (vec![5], 0);
