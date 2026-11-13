@@ -1,10 +1,9 @@
 use std::{
-    env::current_exe,
     fs::File,
     path::{Path, PathBuf},
 };
 
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use strum::EnumCount as _;
 
@@ -25,9 +24,9 @@ impl SigilData {
         let dat_path = if cfg!(debug_assertions) {
             PathBuf::from("./dat/dat.bin")
         } else {
-            let exe = current_exe()?;
+            let exe = std::env::current_exe()?;
             exe.parent()
-                .ok_or(anyhow!("Failed to get exe parent dir"))?
+                .ok_or(anyhow::anyhow!("Failed to get exe parent dir"))?
                 .join("dat/dat.bin")
         };
         let file = File::open(dat_path)?;

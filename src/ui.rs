@@ -3,8 +3,8 @@ use std::{ops::RangeInclusive, sync::LazyLock, time::Duration};
 use anyhow::Result;
 use eframe::egui::{
     self, Align, Align2, Button, CollapsingHeader, Color32, ComboBox, DragValue, FontId, Frame,
-    Grid, Layout, Margin, Panel, Rect, RichText, ScrollArea, Sense, Stroke, Ui, UiBuilder, Vec2,
-    include_image,
+    Grid, Image, Layout, Margin, Panel, Rect, RichText, ScrollArea, Sense, Stroke, Ui, UiBuilder,
+    Vec2, include_image,
 };
 use jiff::{
     RoundMode, Span, SpanRelativeTo, SpanRound, SpanTotal, Timestamp, ToSpan, Unit, Zoned,
@@ -371,11 +371,11 @@ impl eframe::App for UiState {
             .resizable(false)
             .exact_size(20.0)
             .frame(Frame::side_top_panel(style).inner_margin(Margin::ZERO))
-            .show_inside(ui, |ui| {
+            .show(ui, |ui| {
                 self.top_panel(ui);
             });
 
-        egui::CentralPanel::default().show_inside(ui, |ui| {
+        egui::CentralPanel::default().show(ui, |ui| {
             let (time_display_rect, _) =
                 ui.allocate_exact_size(Vec2::new(ui.available_width(), 35.0), Sense::empty());
             self.shared_display(ui, time_display_rect);
@@ -1057,7 +1057,17 @@ impl UiState {
                                     }
                                 });
                             });
-                        if ui.add(Button::new("❌").frame(false)).clicked() {
+                        if ui
+                            .add(
+                                Button::new(
+                                    Image::new(include_image!("../img/cross.png"))
+                                        .tint(Color32::RED)
+                                        .fit_to_exact_size(Vec2::splat(20.0)),
+                                )
+                                .frame(false),
+                            )
+                            .clicked()
+                        {
                             remove = Some(sigil_i);
                         }
                     });
