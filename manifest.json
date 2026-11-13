@@ -1,0 +1,10 @@
+{
+  "name": "sigil sniper PWA",
+  "short_name": "sigil-sniper-pwa",
+  "lang": "en-US",
+  "id": "/index.html",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "white",
+  "theme_color": "white"
+}
