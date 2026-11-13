@@ -23,15 +23,17 @@ use crate::{
     },
 };
 
-static UNSUPPORTED_RECIPE: LazyLock<Color32> =
-    LazyLock::new(|| Color32::from_rgb(237, 106, 90).gamma_multiply(0.8));
-static MOSTLY_SUPPORTED_RECIPE: LazyLock<Color32> =
-    LazyLock::new(|| Color32::from_rgb(232, 170, 20).gamma_multiply(0.8));
-static SUPPORTED_RECIPE: LazyLock<Color32> =
-    LazyLock::new(|| Color32::from_rgb(178, 239, 155).gamma_multiply(0.8));
-static ZAOE_RECIPE: LazyLock<Color32> =
-    LazyLock::new(|| Color32::from_rgb(165, 216, 255).gamma_multiply(0.8));
-static RARITY_RECIPE: LazyLock<Color32> = LazyLock::new(|| Color32::from_rgb(137, 99, 186));
+const UNSUPPORTED_RECIPE: Color32 = Color32::from_rgba_unmultiplied_const(237, 106, 90, 204);
+const MOSTLY_SUPPORTED_RECIPE: Color32 = Color32::from_rgba_unmultiplied_const(232, 170, 20, 204);
+const SUPPORTED_RECIPE: Color32 = Color32::from_rgba_unmultiplied_const(178, 239, 155, 204);
+const ZAOE_RECIPE: Color32 = Color32::from_rgba_unmultiplied_const(165, 216, 255, 204);
+const RARITY_RECIPE: Color32 = Color32::from_rgba_unmultiplied_const(137, 99, 186, 204);
+
+static REMOVE_IMAGE: LazyLock<Image> = LazyLock::new(|| {
+    Image::new(include_image!("../img/cross.png"))
+        .tint(UNSUPPORTED_RECIPE)
+        .fit_to_exact_size(Vec2::splat(20.0))
+});
 
 const MIN_REPAINT: Duration = Duration::from_millis(50);
 
@@ -363,6 +365,7 @@ pub struct UiState {
 
 impl eframe::App for UiState {
     fn ui(&mut self, ui: &mut egui::Ui, _: &mut eframe::Frame) {
+        // Otherwise the clocks won't update properly
         ui.request_repaint_after(MIN_REPAINT);
         self.time = Timestamp::now();
 
@@ -561,15 +564,15 @@ impl UiState {
             DesyncSearchStep::Done => format!("Found {} second desync", self.desync_offset),
         };
         let color = match state.search_step {
-            DesyncSearchStep::InitialBehind => *MOSTLY_SUPPORTED_RECIPE,
-            DesyncSearchStep::InitialAhead => *MOSTLY_SUPPORTED_RECIPE,
-            DesyncSearchStep::NarrowingBehind => *MOSTLY_SUPPORTED_RECIPE,
-            DesyncSearchStep::NarrowingAhead => *MOSTLY_SUPPORTED_RECIPE,
+            DesyncSearchStep::InitialBehind => MOSTLY_SUPPORTED_RECIPE,
+            DesyncSearchStep::InitialAhead => MOSTLY_SUPPORTED_RECIPE,
+            DesyncSearchStep::NarrowingBehind => MOSTLY_SUPPORTED_RECIPE,
+            DesyncSearchStep::NarrowingAhead => MOSTLY_SUPPORTED_RECIPE,
             DesyncSearchStep::Done => {
                 if self.desync_offset == 0 {
-                    *SUPPORTED_RECIPE
+                    SUPPORTED_RECIPE
                 } else {
-                    *UNSUPPORTED_RECIPE
+                    UNSUPPORTED_RECIPE
                 }
             }
         };
@@ -669,7 +672,7 @@ impl UiState {
         Grid::new("Recipe explanations").show(ui, |ui| {
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
-                ui.painter().rect_filled(rect, 0, *SUPPORTED_RECIPE);
+                ui.painter().rect_filled(rect, 0, SUPPORTED_RECIPE);
                 ui.strong("100% predictable");
                 let (rect, resp) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
                 ui.painter()
@@ -687,7 +690,7 @@ impl UiState {
             });
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
-                ui.painter().rect_filled(rect, 0, *MOSTLY_SUPPORTED_RECIPE);
+                ui.painter().rect_filled(rect, 0, MOSTLY_SUPPORTED_RECIPE);
                 ui.strong("Mostly predictable");
                 let (rect, resp) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
                 ui.painter()
@@ -705,7 +708,7 @@ impl UiState {
             });
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
-                ui.painter().rect_filled(rect, 0, *UNSUPPORTED_RECIPE);
+                ui.painter().rect_filled(rect, 0, UNSUPPORTED_RECIPE);
                 ui.strong("Unpredictable");
                 let (rect, resp) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
                 ui.painter()
@@ -726,7 +729,7 @@ impl UiState {
 
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
-                ui.painter().rect_filled(rect, 0, *ZAOE_RECIPE);
+                ui.painter().rect_filled(rect, 0, ZAOE_RECIPE);
                 ui.strong("Zenith AoE");
                 let (rect, resp) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
                 ui.painter()
@@ -744,7 +747,7 @@ impl UiState {
             });
             ui.horizontal(|ui| {
                 let (rect, _) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
-                ui.painter().rect_filled(rect, 0, *RARITY_RECIPE);
+                ui.painter().rect_filled(rect, 0, RARITY_RECIPE);
                 ui.strong("Rarity");
                 let (rect, resp) = ui.allocate_exact_size(paint_area_size, Sense::HOVER);
                 ui.painter()
@@ -786,11 +789,11 @@ impl UiState {
             ui.take_available_space();
             for recipe in self.sigil_data.recipes.iter().skip(1) {
                 let color = match recipe.support {
-                    RecipeSupport::Full => *SUPPORTED_RECIPE,
-                    RecipeSupport::Mostly => *MOSTLY_SUPPORTED_RECIPE,
-                    RecipeSupport::Low => *UNSUPPORTED_RECIPE,
-                    RecipeSupport::ZAoe => *ZAOE_RECIPE,
-                    RecipeSupport::Rarity => *RARITY_RECIPE,
+                    RecipeSupport::Full => SUPPORTED_RECIPE,
+                    RecipeSupport::Mostly => MOSTLY_SUPPORTED_RECIPE,
+                    RecipeSupport::Low => UNSUPPORTED_RECIPE,
+                    RecipeSupport::ZAoe => ZAOE_RECIPE,
+                    RecipeSupport::Rarity => RARITY_RECIPE,
                     RecipeSupport::Unsupported => Color32::GRAY,
                 };
 
@@ -1058,14 +1061,7 @@ impl UiState {
                                 });
                             });
                         if ui
-                            .add(
-                                Button::new(
-                                    Image::new(include_image!("../img/cross.png"))
-                                        .tint(Color32::RED)
-                                        .fit_to_exact_size(Vec2::splat(20.0)),
-                                )
-                                .frame(false),
-                            )
+                            .add(Button::new(REMOVE_IMAGE.clone()).frame(false))
                             .clicked()
                         {
                             remove = Some(sigil_i);
@@ -1246,7 +1242,10 @@ impl UiState {
                                         ui.selectable_value(&mut req.points, range.clone(), text);
                                     }
                                 });
-                            if ui.add(Button::new("❌").frame(false)).clicked() {
+                            if ui
+                                .add(Button::new(REMOVE_IMAGE.clone()).frame(false))
+                                .clicked()
+                            {
                                 remove = Some(req_i);
                             }
                         });
@@ -1441,6 +1440,11 @@ impl UiState {
 
     fn info(&mut self, ui: &mut Ui) {
         ui.heading("How to use");
+        ui.horizontal(|ui| {
+            ui.label("Watch a video guide:");
+            ui.hyperlink("https://youtu.be/nQHqKtlDUGM");
+            // ui.hyperlink_to("HERE", "https://youtu.be/nQHqKtlDUGM");
+        });
         ui.label("0. Use diva song buffs and the Find desync tab to find any time desync with the server. If your system time is properly updated and you play on a reasonable server you can probably skip this.");
         ui.label("Regardless of overall time sync, you can expect the game's timestamp to be slightly behind your system's. It's recommended to feel out the timing with some 0 search depth snipes.");
         ui.label("1. Select a recipe for offset finding. This should be one of the 100% predictable recipes, and does not need to be the recipe you want to snipe.");
@@ -1559,13 +1563,13 @@ fn span_color(span: &Span) -> Result<Color32> {
     const HOUR_SEC: f64 = 60.0 * 60.0;
     const FIVE_MIN_SEC: f64 = 60.0 * 5.0;
     if !(0.0..HOUR_SEC).contains(&seconds) {
-        Ok(*UNSUPPORTED_RECIPE)
+        Ok(UNSUPPORTED_RECIPE)
     } else if seconds > FIVE_MIN_SEC {
         let t = 1.0 - (seconds / (HOUR_SEC - FIVE_MIN_SEC));
-        Ok(UNSUPPORTED_RECIPE.lerp_to_gamma(*MOSTLY_SUPPORTED_RECIPE, t as f32))
+        Ok(UNSUPPORTED_RECIPE.lerp_to_gamma(MOSTLY_SUPPORTED_RECIPE, t as f32))
     } else {
         let t = 1.0 - (seconds / FIVE_MIN_SEC);
-        Ok(MOSTLY_SUPPORTED_RECIPE.lerp_to_gamma(*SUPPORTED_RECIPE, t as f32))
+        Ok(MOSTLY_SUPPORTED_RECIPE.lerp_to_gamma(SUPPORTED_RECIPE, t as f32))
     }
 }
 
