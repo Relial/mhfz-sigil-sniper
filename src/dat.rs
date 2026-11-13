@@ -20,6 +20,7 @@ pub struct SigilData {
 }
 
 impl SigilData {
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn load() -> Result<Self> {
         let dat_path = if cfg!(debug_assertions) {
             PathBuf::from("./dat/dat.bin")
@@ -32,6 +33,13 @@ impl SigilData {
         let file = File::open(dat_path)?;
         let mut buf = [0; 2048];
         let (data, _) = postcard::from_io::<SigilData, _>((file, &mut buf))?;
+        Ok(data)
+    }
+
+    #[cfg(target_arch = "wasm32")]
+    pub fn load() -> Result<Self> {
+        let bytes = include_bytes!("../dat/dat.bin");
+        let data = postcard::from_bytes(bytes)?;
         Ok(data)
     }
 
